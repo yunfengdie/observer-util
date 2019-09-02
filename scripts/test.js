@@ -19,7 +19,7 @@ const config = {
   rollupPreprocessor: {
     plugins: [
       alias({
-        '@nx-js/observer-util': path.resolve(bundlePath)
+        '@yunfengdie/observer-util': path.resolve(bundlePath)
       }),
       babel({
         exclude: 'node_modules/**'
