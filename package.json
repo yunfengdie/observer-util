@@ -1,6 +1,6 @@
 {
   "name": "nemo-observer-util",
-  "version": "4.2.2",
+  "version": "4.3.0",
   "description": "Simple transparent reactivity with 100% language coverage. Made with ES6 Proxies.",
   "main": "dist/cjs.es5.js",
   "module": "dist/es.es5.js",
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:nx-js/observer-util.git"
+    "url": "git@github.com:yunfengdie/observer-util.git"
   },
   "bugs": {
-    "url": "https://github.com/nx-js/observer-util/issues"
+    "url": "https://github.com/yunfengdie/observer-util/issues"
   },
-  "homepage": "https://github.com/nx-js/observer-util#readme",
+  "homepage": "https://github.com/yunfengdie/observer-util#readme",
   "license": "MIT",
   "keywords": [
     "nx",
@@ -51,6 +51,7 @@
     "buble": "^0.15.2",
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
+    "del": "^5.1.0",
     "karma": "^2.0.2",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
