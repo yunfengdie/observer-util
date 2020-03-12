@@ -1,74 +1,37 @@
-import { InternalConfig } from './config'
-import { createTransaction } from './transaction'
+import { InternalConfig } from './config';
+import { createTransaction } from './transaction';
+import { StackManager } from './utils/stack';
+import { decoratorFactory } from './utils/decorator';
 
-let actionCount = 0
+export const action = decoratorFactory(createAction);
+export const actionManager = new StackManager();
 
-export function action (target, propertyKey, descriptor) {
-  if (!propertyKey) {
-    // 1. use as function wrapper
-    return createAction(target)
-  }
-  // 2. use as a decorator
-  if (propertyKey in target) {
-    // 2.1 use as class method decorator
-    descriptor.value = createAction(descriptor.value)
-    return
-  }
-  // 2.2 use as class attribute decorator
-  const internalPropertyKey = Symbol(propertyKey)
-  Object.defineProperty(target, propertyKey, {
-    set: function (value) {
-      if (!(internalPropertyKey in this)) {
-        // must be attribute init setter，wrap it to a action
-        value = createAction(value)
-      } else {
-        // modify in running, not wrapper it，since decorator should just run in init phase
-      }
-      this[internalPropertyKey] = value
-    },
-    get: function () {
-      return this[internalPropertyKey]
-    }
-  })
-}
-
-function duringAction () {
-  return actionCount > 0
-}
-
-function startAction () {
-  actionCount = actionCount + 1
-}
-
-function endAction () {
-  actionCount = actionCount - 1
-  if (actionCount < 0) {
-    throw new Error(
-      '[nemo-observable-util] call endAction but no action is running!'
-    )
-  }
-}
-
-function canWrite () {
-  return !InternalConfig.onlyAllowChangeInAction || duringAction()
+function canWrite() {
+  return !InternalConfig.onlyAllowChangeInAction || actionManager.duringStack;
 }
 
 export const DISABLE_WRITE_ERR =
-  '[nemo-observable-util] can not modify data outside @action'
-export function writeAbleCheck () {
+  '[nemo-observable-util] can not modify data outside @action';
+export function writeAbleCheck() {
   if (!canWrite()) {
-    throw new Error(DISABLE_WRITE_ERR)
+    throw new Error(DISABLE_WRITE_ERR);
   }
 }
 
-function createAction (fn) {
-  const transactionFn = createTransaction(fn)
-  return function (...args) {
-    startAction()
-    try {
-      return transactionFn.apply(this, args)
-    } finally {
-      endAction()
-    }
+function createAction(originalFunc) {
+  if (typeof originalFunc !== 'function') {
+    throw new Error(
+      'action should must wrap on Function: ' + typeof originalFunc
+    );
   }
+  const transactionFn = createTransaction(originalFunc);
+  const identity = actionManager.getUUID();
+  return function(...args) {
+    actionManager.start(identity);
+    try {
+      return transactionFn.apply(this, args);
+    } finally {
+      actionManager.end(identity);
+    }
+  };
 }
