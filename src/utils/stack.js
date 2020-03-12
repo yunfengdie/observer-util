@@ -1,26 +1,30 @@
 export class StackManager {
-  constructor(onFlush) {
-    this.stacks = [];
-    this.onFlush = onFlush;
+  constructor (onFlush) {
+    this.stacks = []
+    this.onFlush = onFlush
   }
+
   uuid = 0;
-  getUUID() {
-    return this.uuid++;
+  getUUID () {
+    return this.uuid++
   }
-  start(target) {
-    this.stacks.push(target);
+
+  start (target) {
+    this.stacks.push(target)
   }
-  end(target) {
-    const lastStack = this.stacks[this.stacks.length - 1];
+
+  end (target) {
+    const lastStack = this.stacks[this.stacks.length - 1]
     if (lastStack !== target) {
-      throw new Error('transaction end not match with start');
+      throw new Error('transaction end not match with start')
     }
-    this.stacks.pop();
+    this.stacks.pop()
     if (!this.duringStack) {
-      this.onFlush && this.onFlush();
+      this.onFlush && this.onFlush()
     }
   }
-  get duringStack() {
-    return this.stacks.length > 0;
+
+  get duringStack () {
+    return this.stacks.length > 0
   }
 }

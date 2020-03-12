@@ -1,20 +1,22 @@
-import { queueReaction } from '../reactionRunner';
+import { queueReaction } from '../reactionRunner'
 
 export class RunnerManager {
-  constructor() {
-    this.runners = new Map();
+  constructor () {
+    this.runners = new Map()
   }
-  add(reaction, operation) {
+
+  add (reaction, operation) {
     // use last operation as source
-    this.runners.set(reaction, operation);
+    this.runners.set(reaction, operation)
   }
+
   flush = () => {
     // copy incase being modified during exec reaction
-    const todoCopy = this.runners;
-    this.runners = new Map();
+    const todoCopy = this.runners
+    this.runners = new Map()
 
     for (const [reaction, operation] of todoCopy.entries()) {
-      queueReaction(reaction, operation);
+      queueReaction(reaction, operation)
     }
   };
 }
