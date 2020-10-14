@@ -117,12 +117,12 @@ describe('transaction', () => {
         fn2()
       })
     )
-    const fn2 = spy(
-      withTransaction(() => {
-        model.user.lastName = 'k1'
-        model.user.lastName = 'k2'
-      })
-    )
+    const originalFunc = withTransaction('customName')(() => {
+      model.user.lastName = 'k1'
+      model.user.lastName = 'k2'
+    })
+    expect(originalFunc.name).to.equal('customName')
+    const fn2 = spy(originalFunc)
     let dummy
     const fn3 = spy(() => {
       dummy = model.user.firstName + model.user.lastName
