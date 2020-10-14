@@ -35,7 +35,7 @@ export function createAction (originalFunc, ...restNames) {
       'action should must wrap on Function: ' + typeof originalFunc
     )
   }
-  const transactionFn = createTransaction(originalFunc)
+  const transactionFn = createTransaction(originalFunc, ...restNames)
   const identity = actionManager.getUUID()
   function wrapper (...args) {
     actionManager.start(identity)

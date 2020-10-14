@@ -1,6 +1,6 @@
 import chai from 'chai'
 import { spy } from './utils'
-import { observe, observable, raw, config } from 'nemo-observable-util'
+import { observe, observable, raw, config, action } from 'nemo-observable-util'
 const { expect } = chai
 
 describe('observe', () => {
@@ -515,6 +515,9 @@ describe('options', () => {
 
   describe('scheduler', () => {
     it('should call the scheduler function with the reaction instead of running it sync', () => {
+      config({
+        onlyAllowChangeInAction: true
+      })
       const counter = observable({ num: 0 })
       const fn = spy(() => counter.num)
       const scheduler = spy(() => {})
@@ -522,10 +525,21 @@ describe('options', () => {
 
       expect(fn.callCount).to.equal(1)
       expect(scheduler.callCount).to.equal(0)
-      counter.num++
+      const modify = action('myModify')(() => {
+        counter.num++
+        innerModify();
+      });
+      const innerModify = action('myModify2')(() => {
+        counter.num++
+      });
+      modify();
       expect(fn.callCount).to.equal(1)
       expect(scheduler.callCount).to.eql(1)
-      expect(scheduler.lastArgs).to.eql([reaction])
+      expect(scheduler.lastArgs).to.eql([reaction, 'myModify'])
+      expect(counter.num).to.equal(2)
+      config({
+        onlyAllowChangeInAction: false
+      })
     })
 
     it('should call scheduler.add with the reaction instead of running it sync', () => {

@@ -10,13 +10,13 @@ export class RunnerManager {
     this.runners.set(reaction, operation)
   }
 
-  flush = () => {
+  flush = (actionName) => {
     // copy incase being modified during exec reaction
     const todoCopy = this.runners
     this.runners = new Map()
 
     for (const [reaction, operation] of todoCopy.entries()) {
-      queueReaction(reaction, operation)
+      queueReaction(reaction, operation, actionName)
     }
   };
 }

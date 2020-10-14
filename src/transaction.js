@@ -31,7 +31,7 @@ export function createTransaction (originalFunc, ...restNames) {
       'transaction should must wrap on Function: ' + typeof originalFunc
     )
   }
-  const identity = transactionManager.getUUID()
+  const identity = transactionManager.getUUID(restNames.join(''))
   function wrapper (...args) {
     transactionManager.start(identity)
     try {

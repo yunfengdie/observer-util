@@ -5,8 +5,9 @@ export class StackManager {
   }
 
   uuid = 0;
-  getUUID () {
-    return this.uuid++
+  getUUID (suffix) {
+    const current = this.uuid++;
+    return [current, suffix || ''].join('@@');
   }
 
   start (target) {
@@ -20,7 +21,8 @@ export class StackManager {
     }
     this.stacks.pop()
     if (!this.duringStack) {
-      this.onFlush && this.onFlush()
+      const [, suffix] = typeof lastStack === 'string' ? lastStack.split('@@') : []
+      this.onFlush && this.onFlush(suffix)
     }
   }
 

@@ -257,7 +257,9 @@ describe('action', () => {
     __decorate([action('customName4')], Foo.prototype, 'baz', undefined)
     const foo = new Foo()
     expect(() => foo.bar()).to.not.throw()
+    expect(fn.callCount).to.equal(2)
     expect(foo.bar()).to.equal(123)
+    expect(fn.callCount).to.equal(3)
 
     expect(foo.baz.name).to.equal('customName4')
     expect(() => foo.baz()).to.not.throw()
