@@ -29,7 +29,7 @@ export function writeAbleCheck (target, key) {
   }
 }
 
-export function createAction (originalFunc) {
+export function createAction (originalFunc, ...restNames) {
   if (typeof originalFunc !== 'function') {
     throw new Error(
       'action should must wrap on Function: ' + typeof originalFunc
@@ -37,7 +37,7 @@ export function createAction (originalFunc) {
   }
   const transactionFn = createTransaction(originalFunc)
   const identity = actionManager.getUUID()
-  return function (...args) {
+  function wrapper (...args) {
     actionManager.start(identity)
     try {
       return transactionFn.apply(this, args)
@@ -45,8 +45,18 @@ export function createAction (originalFunc) {
       actionManager.end(identity)
     }
   }
+  if (restNames.length) {
+    Object.defineProperty(wrapper, 'name', {
+      configurable: true,
+      writable: false,
+      enumerable: false,
+      value: restNames.join('')
+    })
+  }
+
+  return wrapper
 }
-function createAsyncAction (originalFunc) {
+function createAsyncAction (originalFunc, ...restNames) {
   if (typeof originalFunc !== 'function') {
     throw new Error(
       'action should must wrap on Function: ' + typeof originalFunc
@@ -54,7 +64,7 @@ function createAsyncAction (originalFunc) {
   }
   const actionId = actionManager.getUUID()
   const transactionId = transactionManager.getUUID()
-  return function (...args) {
+  function wrapper (...args) {
     const start = () => {
       actionManager.start(actionId)
       transactionManager.start(transactionId)
@@ -81,8 +91,18 @@ function createAsyncAction (originalFunc) {
     } finally {
       end()
     }
+
     return res
   }
+  if (restNames.length) {
+    Object.defineProperty(wrapper, 'name', {
+      configurable: true,
+      writable: false,
+      enumerable: false,
+      value: restNames.join()
+    })
+  }
+  return wrapper
 }
 export function runInAction (fn) {
   return action(fn)()

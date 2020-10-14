@@ -33,6 +33,11 @@ describe('asyncAction', () => {
         counter.nested.num = 8
       })
     ).to.throw('asyncAction should must wrap on Async Function')
+    expect(
+      asyncAction('customName')(() => {
+        counter.nested.num = 8
+      }).name
+    ).to.equal('customName')
   })
   it('should end when sync throw', async () => {
     let dummy
