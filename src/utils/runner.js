@@ -10,7 +10,7 @@ export class RunnerManager {
     this.runners.set(reaction, operation)
   }
 
-  flush = (actionName) => {
+  flush = actionName => {
     // copy incase being modified during exec reaction
     const todoCopy = this.runners
     this.runners = new Map()

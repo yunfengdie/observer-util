@@ -527,12 +527,12 @@ describe('options', () => {
       expect(scheduler.callCount).to.equal(0)
       const modify = action('myModify')(() => {
         counter.num++
-        innerModify();
-      });
+        innerModify()
+      })
       const innerModify = action('myModify2')(() => {
         counter.num++
-      });
-      modify();
+      })
+      modify()
       expect(fn.callCount).to.equal(1)
       expect(scheduler.callCount).to.eql(1)
       expect(scheduler.lastArgs).to.eql([reaction, 'myModify'])
