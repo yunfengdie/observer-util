@@ -167,7 +167,7 @@ person.name.first = 'Bob';
 
 </details>
 <details>
-<summary>Computed properties</summary>
+<summary>Getter properties</summary>
 
 ```js
 import { observable, observe } from 'nemo-observable-util';
@@ -176,7 +176,7 @@ const person = observable({
   firstName: 'Bob',
   lastName: 'Smith',
   get name() {
-    return `${firstName} ${lastName}`;
+    return `${this.firstName} ${this.lastName}`;
   }
 });
 
