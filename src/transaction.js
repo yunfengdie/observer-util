@@ -32,7 +32,7 @@ export function createTransaction (originalFunc, ...restNames) {
     )
   }
   const identity = transactionManager.getUUID()
-  function res (...args) {
+  function wrapper (...args) {
     transactionManager.start(identity)
     try {
       return originalFunc.apply(this, args)
@@ -41,14 +41,14 @@ export function createTransaction (originalFunc, ...restNames) {
     }
   }
   if (restNames.length) {
-    Object.defineProperty(res, 'name', {
+    Object.defineProperty(wrapper, 'name', {
       configurable: true,
       writable: false,
       enumerable: false,
       value: restNames.join('')
     })
   }
-  return res
+  return wrapper
 }
 export function flush () {
   runnerManager.flush()
