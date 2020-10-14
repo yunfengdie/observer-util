@@ -1,5 +1,3 @@
-import { action } from 'nemo-observable-util';
-
 declare module 'nemo-observable-util' {
   function observable<Observable extends object>(obj?: Observable): Observable;
   function isObservable(obj: object): boolean;
