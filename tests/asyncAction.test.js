@@ -91,7 +91,7 @@ describe('asyncAction', () => {
         return this.data
       }
     }
-    __decorate([asyncAction], Foo.prototype, 'bar', null)
+    __decorate([asyncAction('xx')], Foo.prototype, 'bar', null)
     const foo = new Foo()
     await expect(foo.bar()).to.eventually.fulfilled
     expect(foo.data).to.equal(456)

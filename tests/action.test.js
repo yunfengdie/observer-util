@@ -39,15 +39,20 @@ describe('action', () => {
     expect(() => {
       counter.nested.num = 7
     }).to.throw(DISABLE_WRITE_ERR)
-    const reaction1 = action(() => {
+    const reaction1 = action(function vincent () {
       counter.nested.num = 8
     })
+    expect(reaction1.name).to.equal('vincent')
     expect(reaction1).to.not.throw()
     const reaction2 = action('customName1')(() => {
       counter.nested.num = 9
     })
     expect(reaction2.name).to.equal('customName1')
     expect(reaction2).to.not.throw()
+    const reaction3 = action('customName3')(function lee () {
+      counter.nested.num = 9
+    })
+    expect(reaction3.name).to.equal('customName3:lee')
   })
   it('should support class method decorator', () => {
     let dummy
@@ -73,13 +78,14 @@ describe('action', () => {
       }
     }
     __decorate([action], Foo.prototype, 'bar', null)
+    __decorate([action], Foo.prototype, 'data', undefined)
     __decorate([action('customName2')], Foo.prototype, 'baz', null)
     const foo = new Foo()
     expect(() => foo.bar()).to.not.throw()
     expect(foo.bar()).to.equal(456)
     expect(counter.nested.num).to.equal(8)
     expect(() => foo.baz()).to.not.throw()
-    expect(foo.baz.name).to.equal('customName2')
+    expect(foo.baz.name).to.equal('customName2:Foo:baz')
     expect(foo.baz()).to.equal(456)
     expect(counter.nested.num).to.equal(9)
   })
@@ -130,11 +136,11 @@ describe('action', () => {
     expect(
       Object.getOwnPropertyDescriptor(Object.getPrototypeOf(foo), 'baz').set
         .name
-    ).to.equal('customName3')
+    ).to.equal('customName3:Foo:baz')
     expect(
       Object.getOwnPropertyDescriptor(Object.getPrototypeOf(foo), 'baz').get
         .name
-    ).to.equal('customName3')
+    ).to.equal('customName3:Foo:baz')
     expect(() => (foo.baz = 400)).to.not.throw()
     expect(foo.baz).to.equal(400)
     expect(counter.nested.num).to.equal(9999993)
@@ -261,7 +267,7 @@ describe('action', () => {
     expect(foo.bar()).to.equal(123)
     expect(fn.callCount).to.equal(3)
 
-    expect(foo.baz.name).to.equal('customName4')
+    expect(foo.baz.name).to.equal('customName4:Foo:baz')
     expect(() => foo.baz()).to.not.throw()
     expect(foo.baz()).to.equal(123)
   })

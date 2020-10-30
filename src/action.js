@@ -1,7 +1,11 @@
 import { InternalConfig } from './config'
 import { createTransaction, transactionManager } from './transaction'
 import { StackManager } from './utils/stack'
-import { decoratorFactory, NemoObservableInfo } from './utils/decorator'
+import {
+  decoratorFactory,
+  NemoObservableInfo,
+  joinName
+} from './utils/decorator'
 
 export const action = decoratorFactory(createAction, createAction)
 export const asyncAction = decoratorFactory(createAsyncAction, createAction)
@@ -50,7 +54,7 @@ export function createAction (originalFunc, ...restNames) {
       configurable: true,
       writable: false,
       enumerable: false,
-      value: restNames.join('')
+      value: joinName(restNames)
     })
   }
 
@@ -99,7 +103,7 @@ function createAsyncAction (originalFunc, ...restNames) {
       configurable: true,
       writable: false,
       enumerable: false,
-      value: restNames.join()
+      value: joinName(restNames)
     })
   }
   return wrapper
