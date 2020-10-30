@@ -1,5 +1,5 @@
 import { StackManager } from './utils/stack'
-import { decoratorFactory } from './utils/decorator'
+import { decoratorFactory, joinName } from './utils/decorator'
 import { RunnerManager } from './utils/runner'
 import { createAction } from './action'
 
@@ -31,7 +31,8 @@ export function createTransaction (originalFunc, ...restNames) {
       'transaction should must wrap on Function: ' + typeof originalFunc
     )
   }
-  const identity = transactionManager.getUUID(restNames.join(''))
+  const name = joinName(restNames)
+  const identity = transactionManager.getUUID(name)
   function wrapper (...args) {
     transactionManager.start(identity)
     try {
@@ -45,7 +46,7 @@ export function createTransaction (originalFunc, ...restNames) {
       configurable: true,
       writable: false,
       enumerable: false,
-      value: restNames.join('')
+      value: name
     })
   }
   return wrapper
