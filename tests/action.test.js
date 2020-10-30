@@ -78,6 +78,7 @@ describe('action', () => {
       }
     }
     __decorate([action], Foo.prototype, 'bar', null)
+    __decorate([action], Foo.prototype, 'data', undefined)
     __decorate([action('customName2')], Foo.prototype, 'baz', null)
     const foo = new Foo()
     expect(() => foo.bar()).to.not.throw()
