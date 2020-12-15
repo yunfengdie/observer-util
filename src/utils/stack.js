@@ -23,7 +23,7 @@ export class StackManager {
     if (!this.duringStack) {
       const [, suffix] =
         typeof lastStack === 'string' ? lastStack.split('@@') : []
-      this.onFlush && this.onFlush(suffix)
+      this.onFlush && this.onFlush(suffix, target)
     }
   }
 

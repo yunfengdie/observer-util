@@ -535,7 +535,7 @@ describe('options', () => {
       modify()
       expect(fn.callCount).to.equal(1)
       expect(scheduler.callCount).to.eql(1)
-      expect(scheduler.lastArgs).to.eql([reaction, 'myModify'])
+      expect(scheduler.lastArgs).to.eql([reaction, 'myModify', '0@@myModify'])
       expect(counter.num).to.equal(2)
       config({
         onlyAllowChangeInAction: false
