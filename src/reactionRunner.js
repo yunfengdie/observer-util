@@ -55,15 +55,15 @@ export function queueReactionsForOperation (operation) {
   })
 }
 
-export function queueReaction (reaction, operation, actionName) {
+export function queueReaction (reaction, operation, actionName, uuid) {
   debugOperation(reaction, operation)
   // queue the reaction for later execution or run it immediately
   if (typeof reaction.scheduler === 'function') {
-    reaction.scheduler(reaction, actionName)
+    reaction.scheduler(reaction, actionName, uuid)
   } else if (typeof reaction.scheduler === 'object') {
     reaction.scheduler.add(reaction)
   } else {
-    reaction(actionName)
+    reaction(actionName, uuid)
   }
 }
 
