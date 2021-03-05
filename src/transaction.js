@@ -51,6 +51,6 @@ export function createTransaction (originalFunc, ...restNames) {
   }
   return wrapper
 }
-export function flush () {
-  runnerManager.flush()
+export function flush (actionName, uuid) {
+  runnerManager.flush(actionName, uuid)
 }
