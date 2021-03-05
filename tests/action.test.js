@@ -1,6 +1,12 @@
 import chai from 'chai'
 import { spy, __decorate } from './utils'
-import { observe, observable, config, action } from 'nemo-observable-util'
+import {
+  observe,
+  observable,
+  config,
+  action,
+  flush
+} from 'nemo-observable-util'
 import { DISABLE_WRITE_ERR } from '../src/action'
 const { expect } = chai
 
@@ -270,5 +276,24 @@ describe('action', () => {
     expect(foo.baz.name).to.equal('customName4:Foo:baz')
     expect(() => foo.baz()).to.not.throw()
     expect(foo.baz()).to.equal(123)
+  })
+
+  it('flush', () => {
+    let dummy
+    const counter = observable({ nested: { num: 0 } })
+    const fn = spy(() => (dummy = counter.nested.num))
+    const scheduler = spy(() => {})
+    const reaction = observe(fn, { scheduler })
+    expect(dummy).to.equal(0)
+
+    const reaction1 = action(function vincent () {
+      counter.nested.num = 8
+      flush('flushName', 3)
+    })
+    expect(dummy).to.equal(0)
+    expect(reaction1.name).to.equal('vincent')
+    reaction1()
+    expect(scheduler.callCount).to.equal(1)
+    expect(scheduler.lastArgs).to.eql([reaction, 'flushName', 3])
   })
 })
