@@ -92,8 +92,9 @@ function createAsyncAction (originalFunc, ...restNames) {
       } else {
         res.finally(end)
       }
-    } finally {
+    } catch (err) {
       end()
+      throw err
     }
 
     return res
